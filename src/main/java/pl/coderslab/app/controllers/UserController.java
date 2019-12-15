@@ -10,7 +10,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.webflow.context.servlet.HttpServletContextMap;
 import pl.coderslab.app.dto.UserDto;
+import pl.coderslab.app.entities.Game;
 import pl.coderslab.app.entities.User;
+import pl.coderslab.app.repositories.GameRepository;
 import pl.coderslab.app.repositories.UserRepository;
 
 
@@ -18,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.util.Collection;
 import java.util.List;
 
 
@@ -28,6 +31,8 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private GameRepository gameRepository;
 
     @RequestMapping(path = "/add", method = RequestMethod.GET)
     public String add(Model model){
@@ -78,6 +83,8 @@ public class UserController {
             return "needSignIn";
         }
         model.addAttribute("user", user);
+        List<Game> games = gameRepository.findFirst5ByPlayersNotContainsOrderByGameDateAsc(user);
+        model.addAttribute("games", games);
         return "userDesktop";
     }
 
@@ -145,5 +152,10 @@ public class UserController {
             return "redirect: /user/desktop";
         }
         return "wrongPassword";
+    }
+
+    @ModelAttribute("games")
+    public Collection<Game> getFiveGames(){
+        return gameRepository.findFirst5ByOrderByGameDateAsc();
     }
 }

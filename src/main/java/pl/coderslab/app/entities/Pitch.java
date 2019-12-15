@@ -22,7 +22,7 @@ public class Pitch {
 
     @Id
     @GeneratedValue
-    private int id;
+    private Long id;
 
     @NotEmpty
     private String name;
@@ -31,4 +31,5 @@ public class Pitch {
     @NotEmpty
     private String address;
 
+    private String type;
 }

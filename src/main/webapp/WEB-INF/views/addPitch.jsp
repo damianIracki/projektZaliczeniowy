@@ -11,6 +11,11 @@
     <form:form method="post" modelAttribute="pitch">
         Name: <form:input path="name"/>
         Address: <form:input path="address"/>
+        Type: <form:select path="type">
+            <form:option value="baloon"/>
+            <form:option value="open"/>
+            <form:option value="hall"/>
+        </form:select>
         <input type="submit" value="save"/>
     </form:form>
 </body>

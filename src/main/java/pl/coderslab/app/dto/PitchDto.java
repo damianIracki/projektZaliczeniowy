@@ -18,4 +18,6 @@ public class PitchDto {
 
     @NotEmpty
     private String address;
+
+    private String type;
 }

@@ -8,6 +8,7 @@ import pl.coderslab.app.entities.Pitch;
 
 import java.sql.Time;
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 
 @Getter
@@ -16,13 +17,13 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class GameDto {
 
-    private LocalDate gameDate;
+    private String gameDate;
 
-    private Time startTime;
+    private String startTime;
 
     private int gameTime;
 
-    private Pitch pitch;
+    private String pitch;
 
     private int maxPlayers;
 
@@ -32,6 +33,17 @@ public class GameDto {
 
     private String description;
 
-
-
+    @Override
+    public String toString() {
+        return "GameDto{" +
+                "gameDate='" + gameDate + '\'' +
+                ", startTime='" + startTime + '\'' +
+                ", gameTime=" + gameTime +
+                ", pitch='" + pitch + '\'' +
+                ", maxPlayers=" + maxPlayers +
+                ", available=" + available +
+                ", pricePerPlayer=" + pricePerPlayer +
+                ", description='" + description + '\'' +
+                '}';
+    }
 }

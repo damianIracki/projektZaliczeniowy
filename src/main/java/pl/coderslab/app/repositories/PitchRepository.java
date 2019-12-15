@@ -15,4 +15,8 @@ public interface PitchRepository extends JpaRepository<Pitch, Long> {
 
     Pitch findFirstByName(String pitchName);
 
+    @Override
+    Pitch getOne(Long aLong);
+
+    Pitch findFirstById(Long id);
 }

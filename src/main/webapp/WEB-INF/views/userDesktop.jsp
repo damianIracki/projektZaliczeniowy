@@ -9,8 +9,42 @@
 </head>
 <body>
 <h1>Welcome ${user.userName}</h1>
+<a href="/game/create">Create Game</a>
 <a href="/user/edit">Edit Profile</a>
-<a href="/user/logout">Logout</a>
 <a href="/user/changePassword">Change Password</a>
+<a href="/user/logout">Logout</a><br>
+<h3>Five earliest games</h3>
+<table>
+    <thead>
+    <td>Game Date</td>
+    <td>Start Time</td>
+    <td>Game Time</td>
+    <td>max number of players</td>
+    <td>Creator</td>
+    <td>Pitch</td>
+    <td>Price per player</td>
+    <td>Description</td>
+    </thead>
+    <c:forEach items="${games}" var = "game">
+        <tr>
+            <td>${game.gameDate}</td>
+            <td>${game.startTime}</td>
+            <td>${game.gameTime}</td>
+            <td>${game.maxPlayer}</td>
+            <td>${game.creator.userName}</td>
+            <td><a href="/pitch/${game.pitch.id}">${game.pitch.name}</a></td>
+            <td>${game.pricePerPlayer}</td>
+            <td>${game.description}</td>
+            <c:choose>
+                <c:when test="${game.available=='true'}">
+                    <td><a href="/game/join/${game.id}">JOIN</a></td>
+                </c:when>
+                <c:otherwise><td>FULL</td></c:otherwise>
+            </c:choose>
+
+        </tr>
+
+    </c:forEach>
+</table>
 </body>
 </html>

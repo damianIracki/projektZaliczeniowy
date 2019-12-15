@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import pl.coderslab.app.dto.PitchDto;
@@ -42,6 +43,13 @@ public class PitchController {
         List<Pitch> pitches = pitchRepository.findAll();
         model.addAttribute("pitches", pitches);
         return "allPitch";
+    }
+
+    @RequestMapping(path = "/{id}")
+    public String showPitch(@PathVariable Long id, Model model){
+        Pitch pitch = pitchRepository.findFirstById(id);
+        model.addAttribute("pitch", pitch);
+        return "pitchDetails";
     }
 }
 
