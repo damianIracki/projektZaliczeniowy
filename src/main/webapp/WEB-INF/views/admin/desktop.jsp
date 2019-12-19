@@ -5,11 +5,13 @@
            uri="http://www.springframework.org/tags/form" %>
 <html>
 <head>
-    <title>HomePage</title>
+    <title>Admin Desktop</title>
 </head>
 <body>
-    <h1>Welcome Home</h1>
-    <a href="/add">Sign up</a>
-    <a href="/login">Sign in</a>
+    <h3>Admin Desktop</h3>
+    <a href="/admin/allGames">All games</a>
+    <a href="/admin/allUsers">All users</a>
+    <a href="/admin/allPitches">All pitches</a>
+    <a href="/logout">Logout</a><br>
 </body>
 </html>

@@ -5,21 +5,21 @@
            uri="http://www.springframework.org/tags/form" %>
 <html>
 <head>
-    <title>AllGames</title>
+    <title>My Games</title>
 </head>
 <body>
 <table>
     <thead>
-        <td>Game Date</td>
-        <td>Start Time</td>
-        <td>Game Time</td>
-        <td>max number of players</td>
-        <td>Creator</td>
-        <td>Pitch</td>
-        <td>Price per player</td>
-        <td>Description</td>
+    <td>Game Date</td>
+    <td>Start Time</td>
+    <td>Game Time</td>
+    <td>max number of players</td>
+    <td>Creator</td>
+    <td>Pitch</td>
+    <td>Price per player</td>
+    <td>Description</td>
     </thead>
-    <c:forEach items="${games}" var = "game">
+    <c:forEach items="${myGames}" var = "game">
         <tr>
             <td>${game.gameDate}</td>
             <td>${game.startTime}</td>
@@ -29,9 +29,16 @@
             <td><a href="/pitch/${game.pitch.id}">${game.pitch.name}</a></td>
             <td>${game.pricePerPlayer}</td>
             <td>${game.description}</td>
+            <td><a href="/game/candidates/${game.id}">Candidates</a> </td>
+            <td><a href="/game/players/${game.id}">Players</a></td>
+            <c:choose>
+                <c:when test="${game.available == 'false'}">
+                    <td>FULL</td>
+                </c:when>
+                <c:otherwise><td>OPEN</td></c:otherwise>
+            </c:choose>
         </tr>
     </c:forEach>
 </table>
-
 </body>
 </html>

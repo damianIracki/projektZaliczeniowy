@@ -9,6 +9,6 @@
 </head>
 <body>
     <h3>Your not Log In, please do it!</h3>
-    <h3><a href="/user/login">SignIn</a></h3>
+    <h3><a href="/login">SignIn</a></h3>
 </body>
 </html>

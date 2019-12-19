@@ -11,7 +11,8 @@
     <form method="post" action="login">
         userName: <input type="text" name = "userName"><br>
         Password: <input type = "password" name = "userPassword"><br>
-        <input type="submit" value="Login">
+        <input type="submit" value="Login"><br>
+        <a href="/">Homepage</a>
     </form>
 </body>
 </html>

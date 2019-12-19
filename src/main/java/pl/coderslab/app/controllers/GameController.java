@@ -7,10 +7,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import pl.coderslab.app.dto.GameDto;
+import pl.coderslab.app.entities.Candidate;
 import pl.coderslab.app.entities.Game;
 
 import pl.coderslab.app.entities.Pitch;
 import pl.coderslab.app.entities.User;
+import pl.coderslab.app.repositories.CandidateRepository;
 import pl.coderslab.app.repositories.GameRepository;
 import pl.coderslab.app.repositories.PitchRepository;
 
@@ -22,6 +24,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 
@@ -34,6 +37,9 @@ public class GameController {
 
     @Autowired
     private PitchRepository pitchRepository;
+
+    @Autowired
+    private CandidateRepository candidateRepository;
 
     @RequestMapping(path = "/create", method = RequestMethod.GET)
     public String createGame (HttpSession session, Model model){
@@ -61,7 +67,7 @@ public class GameController {
         game.getPlayers().add((User)session.getAttribute("user"));
         game.setAvailable(true);
         gameRepository.save(game);
-        return "redirect: /game/all";
+        return "redirect: /game/myGames";
     }
 
     @RequestMapping(path = "/join/{id}")
@@ -69,14 +75,45 @@ public class GameController {
         if(session.getAttribute("user") == null){
             return "needSignIn";
         }
+
         Game game = gameRepository.findFirstById(id);
         User user = (User)session.getAttribute("user");
-        game.getPlayers().add(user);
-        game.setAvailable(true);
-        gameRepository.save(game);
+        if(candidateRepository.findFirstByUserAndGame(user, game) != null){
+            return "alreadyJoined";
+        }
+
+        Candidate candidate = new Candidate();
+        candidate.setUser(user);
+        candidate.setJoinedDateTime(LocalDateTime.now());
+        candidate.setGame(game);
+        candidateRepository.save(candidate);
         return "joiningSuccess";
     }
 
+    @RequestMapping(path = "/acceptCandidate/{id}")
+    public String acceptCandidateToGame(@PathVariable Long id){
+
+        return "ToDo";
+    }
+
+    @RequestMapping(path = "/candidates/{gameId}")
+    public String showCandidates(Model model, HttpSession session, @PathVariable Long gameId){
+        Game game = gameRepository.findFirstById(gameId);
+        List<Candidate> candidates = candidateRepository.findAllByGameOrderByJoinedDateTimeAsc(game);
+        model.addAttribute("candidates", candidates);
+        model.addAttribute("game", game);
+        return "game/candidatesToGame";
+
+
+    }
+
+    @RequestMapping(path = "/myGames")
+    public String showMyGames(Model model, HttpSession session){
+        User user = (User)session.getAttribute("user");
+        List<Game> myGames = gameRepository.findByCreatorOrderByGameDateAscStartTimeAsc(user);
+        model.addAttribute("myGames", myGames);
+        return "user/asCreatorGames";
+    }
 
     @RequestMapping(path = "/all")
     public String findAll(){

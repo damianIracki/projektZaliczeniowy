@@ -20,4 +20,8 @@ public interface GameRepository  extends JpaRepository<Game, Long> {
 
     List<Game> findFirst5ByPlayersNotContainsOrderByGameDateAsc(User user);
 
+    List<Game> findByCreatorOrderByGameDateAscStartTimeAsc(User user);
+
+    @Override
+    void delete(Game game);
 }

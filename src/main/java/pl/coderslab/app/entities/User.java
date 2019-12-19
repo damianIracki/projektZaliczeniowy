@@ -7,8 +7,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.mindrot.jbcrypt.BCrypt;
 
+
 import javax.persistence.*;
 import javax.validation.constraints.*;
+import java.util.Set;
+
 
 @Entity
 @Table(name = "users")
@@ -23,6 +26,7 @@ public class User  {
     private long id;
 
     @NotEmpty
+    @Column(unique = true)
     private String userName;
 
     @NotEmpty
@@ -35,6 +39,7 @@ public class User  {
 
     private int status;
 
+
     public void setPassword(String password) {
         String hashed = BCrypt.hashpw(password, BCrypt.gensalt());
         this.password = hashed;
@@ -44,13 +49,6 @@ public class User  {
         return password;
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", userName='" + userName + '\'' +
-                ", email='" + email + '\'' +
-                ", status=" + status +
-                '}';
-    }
+
+
 }

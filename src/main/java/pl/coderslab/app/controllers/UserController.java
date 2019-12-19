@@ -1,27 +1,24 @@
 package pl.coderslab.app.controllers;
 
-import com.sun.org.apache.regexp.internal.RE;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.webflow.context.servlet.HttpServletContextMap;
+
 import pl.coderslab.app.dto.UserDto;
+import pl.coderslab.app.entities.Candidate;
 import pl.coderslab.app.entities.Game;
 import pl.coderslab.app.entities.User;
+import pl.coderslab.app.repositories.CandidateRepository;
 import pl.coderslab.app.repositories.GameRepository;
 import pl.coderslab.app.repositories.UserRepository;
 
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 
 @Controller
@@ -34,47 +31,8 @@ public class UserController {
     @Autowired
     private GameRepository gameRepository;
 
-    @RequestMapping(path = "/add", method = RequestMethod.GET)
-    public String add(Model model){
-        model.addAttribute("user", new UserDto());
-        return "addUser";
-    }
-
-    @RequestMapping(path = "/add", method = RequestMethod.POST)
-    public String saveUSer(@ModelAttribute("user") @Valid UserDto userDto, BindingResult result){
-        if(result.hasErrors()) {
-            return "addUser";
-        }
-        User user = new User();
-        user.setPassword(userDto.getPassword());
-        user.setStatus(1);
-        user.setUserName(userDto.getUserName());
-        user.setEmail(userDto.getEmail());
-        userRepository.save(user);
-        return "redirect: /";
-    }
-
-    @RequestMapping(path = "/all")
-    public String showAll(Model model){
-        List<User> users = userRepository.findAll();
-        model.addAttribute("users", users);
-        return "allusers";
-    }
-
-    @RequestMapping(path = "/login", method = RequestMethod.GET)
-    public String login(){
-        return "userLogin";
-    }
-
-    @RequestMapping(path = "/login", method = RequestMethod.POST)
-    public String login(@RequestParam(name = "userName") String userName, @RequestParam String userPassword, HttpSession session) {
-        User user = userRepository.findFirstByUserName(userName);
-        if(user != null && BCrypt.checkpw(userPassword, user.getPassword())){
-            session.setAttribute("user", user);
-            return "redirect: /user/desktop";
-        }
-        return "redirect: /user/login";
-    }
+    @Autowired
+    private CandidateRepository candidateRepository;
 
     @RequestMapping(path = "/desktop", method = RequestMethod.GET)
     public String userDesktop(Model model, HttpSession session){
@@ -88,11 +46,7 @@ public class UserController {
         return "userDesktop";
     }
 
-    @RequestMapping(path= "/logout", method = RequestMethod.GET)
-    public String userLogout(HttpSession session){
-        session.removeAttribute("user");
-        return "redirect: /";
-    }
+
 
     @RequestMapping(path = "/edit", method = RequestMethod.GET)
     public String editUser(HttpSession session, Model model){
@@ -158,4 +112,6 @@ public class UserController {
     public Collection<Game> getFiveGames(){
         return gameRepository.findFirst5ByOrderByGameDateAsc();
     }
+
+
 }

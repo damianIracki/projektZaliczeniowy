@@ -5,15 +5,10 @@
            uri="http://www.springframework.org/tags/form" %>
 <html>
 <head>
-    <title>All Users</title>
+    <title>WRONG WAY!</title>
 </head>
 <body>
-    <c:forEach items="${users}" var="user">
-        <p>
-            ${user.userName}
-            ${user.email}
-            ${user.status}
-        </p>
-    </c:forEach>
+    <h3>U DONT HAVE PERMISSION</h3>
+<p><a href="/">Go to desktop</a></p>
 </body>
 </html>
