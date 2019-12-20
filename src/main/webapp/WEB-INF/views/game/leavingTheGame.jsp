@@ -5,13 +5,10 @@
            uri="http://www.springframework.org/tags/form" %>
 <html>
 <head>
-    <title>${pitch.name} Details</title>
+    <title>LeavingSuccessfully</title>
 </head>
 <body>
-    <p>Name: ${pitch.name}</p>
-    <p>Address: ${pitch.address}</p>
-    <p>Type: ${pitch.type}</p>
-<a href="/user/desktop">To User Desktop</a>
-<a href="/game/myGames">To Game List</a>
+    You successfully leave the game ${game.description}!<br>
+<a href="/game/acceptedGames">Back to game list</a>
 </body>
 </html>

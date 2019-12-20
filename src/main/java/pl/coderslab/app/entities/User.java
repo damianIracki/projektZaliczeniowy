@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.validator.constraints.UniqueElements;
 import org.mindrot.jbcrypt.BCrypt;
 
 
@@ -25,7 +26,7 @@ public class User  {
     @GeneratedValue
     private long id;
 
-    @NotEmpty
+    @Size(min = 5, max = 30)
     @Column(unique = true)
     private String userName;
 

@@ -20,5 +20,6 @@
         <input type="submit" value="save"/>
         <form:errors path="*"/>
     </form:form>
+<a href="/user/desktop">Back to desktop</a>
 </body>
 </html>

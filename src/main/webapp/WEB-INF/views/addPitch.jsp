@@ -9,14 +9,15 @@
 </head>
 <body>
     <form:form method="post" modelAttribute="pitch">
-        Name: <form:input path="name"/>
-        Address: <form:input path="address"/>
+        Name: <form:input path="name"/><br>
+        Address: <form:input path="address"/><br>
         Type: <form:select path="type">
             <form:option value="baloon"/>
             <form:option value="open"/>
             <form:option value="hall"/>
-        </form:select>
-        <input type="submit" value="save"/>
+        </form:select><br>
+        <input type="submit" value="save"/><br>
     </form:form>
+<a href="/user/desktop">Back to desktop</a>
 </body>
 </html>

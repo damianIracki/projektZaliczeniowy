@@ -12,7 +12,8 @@
         userName: <input type="text" name = "userName"><br>
         Password: <input type = "password" name = "userPassword"><br>
         <input type="submit" value="Login"><br>
-        <a href="/">Homepage</a>
+        Do you don't have account? <a href="/add">Sing up</a><br>
+        <a href="/">Back to homepage</a>
     </form>
 </body>
 </html>

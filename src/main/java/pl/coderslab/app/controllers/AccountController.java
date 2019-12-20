@@ -52,7 +52,7 @@ public class AccountController {
         if(user != null && BCrypt.checkpw(userPassword, user.getPassword())){
             session.setAttribute("user", user);
             if(user.getStatus()==9){
-                return "admin/desktop";
+                return "redirect: /admin/desktop";
             } else if (user.getStatus() == 8){
                 return "userBanned";
             }

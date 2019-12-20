@@ -1,8 +1,6 @@
 package pl.coderslab.app.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.format.datetime.DateFormatter;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -10,19 +8,19 @@ import pl.coderslab.app.dto.GameDto;
 import pl.coderslab.app.entities.Candidate;
 import pl.coderslab.app.entities.Game;
 
-import pl.coderslab.app.entities.Pitch;
 import pl.coderslab.app.entities.User;
 import pl.coderslab.app.repositories.CandidateRepository;
 import pl.coderslab.app.repositories.GameRepository;
 import pl.coderslab.app.repositories.PitchRepository;
+import pl.coderslab.app.repositories.UserRepository;
 
 import javax.servlet.http.HttpSession;
 
-import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -40,6 +38,9 @@ public class GameController {
 
     @Autowired
     private CandidateRepository candidateRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @RequestMapping(path = "/create", method = RequestMethod.GET)
     public String createGame (HttpSession session, Model model){
@@ -64,8 +65,9 @@ public class GameController {
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:m");
         game.setGameDate(LocalDate.parse(gameDto.getGameDate(), dateFormatter));
         game.setStartTime(LocalTime.parse(gameDto.getStartTime(), timeFormatter));
-        game.getPlayers().add((User)session.getAttribute("user"));
-        game.setAvailable(true);
+        User user = userRepository.findFirstById(((User) session.getAttribute("user")).getId());
+        game.getPlayers().add(user);
+        game.checkAvailable(true);
         gameRepository.save(game);
         return "redirect: /game/myGames";
     }
@@ -90,10 +92,18 @@ public class GameController {
         return "joiningSuccess";
     }
 
-    @RequestMapping(path = "/acceptCandidate/{id}")
-    public String acceptCandidateToGame(@PathVariable Long id){
-
-        return "ToDo";
+    @RequestMapping(path = "candidate/accept/{candidateId}")
+    public String acceptCandidateToGame(@PathVariable Long candidateId, Model model){
+        Candidate candidate = candidateRepository.findFirstById(candidateId);
+        User player = userRepository.findFirstById(candidate.getUser().getId());
+        Game game = gameRepository.findFirstById(candidate.getGameId());
+        game.getPlayers().add(player);
+        game.checkAvailable(true);
+        model.addAttribute("player", player);
+        model.addAttribute("game", game);
+        gameRepository.save(game);
+        candidateRepository.delete(candidate);
+        return "game/playerAccepted";
     }
 
     @RequestMapping(path = "/candidates/{gameId}")
@@ -103,10 +113,16 @@ public class GameController {
         model.addAttribute("candidates", candidates);
         model.addAttribute("game", game);
         return "game/candidatesToGame";
-
-
     }
 
+    @RequestMapping(path = "/players/{gameId}")
+    public String showPlayers(Model model, HttpSession session, @PathVariable Long gameId){
+        Game game = gameRepository.findFirstById(gameId);
+        List<User> players = game.getPlayers();
+        model.addAttribute("players", players);
+        model.addAttribute("game", game);
+        return "game/playersToGame";
+    }
     @RequestMapping(path = "/myGames")
     public String showMyGames(Model model, HttpSession session){
         User user = (User)session.getAttribute("user");
@@ -114,6 +130,78 @@ public class GameController {
         model.addAttribute("myGames", myGames);
         return "user/asCreatorGames";
     }
+
+    @RequestMapping(path = "/gamesToJoin")
+    public String showGamesToJoin(Model model, HttpSession session){
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return "needSignIn";
+        }
+        List<Game> gamesToJoined = gameRepository.findByPlayersNotContainsAndGameDateAfterOrderByGameDateAscStartTimeAsc(user, LocalDate.now());
+        List<Game> gamesAlreadyJoined = new ArrayList<>();
+        List<Candidate> userCandidates = candidateRepository.findAllByUser(user);
+        for (Candidate userCandidate : userCandidates) {
+            Game userGame = gameRepository.findFirstById(userCandidate.getGameId());
+            for (Game game : gamesToJoined) {
+                if(game.getId() == userGame.getId()){
+                    gamesToJoined.remove(game);
+                    gamesAlreadyJoined.add(game);
+                    break;
+                }
+            }
+        }
+        model.addAttribute("gamesToJoined", gamesToJoined);
+        model.addAttribute("gamesAlreadyJoined", gamesAlreadyJoined);
+        return "game/gamesToJoin";
+    }
+
+    @RequestMapping(path = "cancel/{gameId}")
+    public String cancelGame (@PathVariable Long gameId, HttpSession session, Model model){
+        User user = (User)session.getAttribute("user");
+        if(user == null){
+            return "needSignIn";
+        }
+        Game game = gameRepository.findFirstById(gameId);
+        if(user.getId() != game.getCreator().getId()){
+            return "dontHavePermissionToCancelGame";
+        }
+        model.addAttribute("game", game);
+        List<Candidate> candidatesToDelete = candidateRepository.findAllByGame(game);
+        for (Candidate candidate : candidatesToDelete) {
+            candidateRepository.delete(candidate);
+        }
+        gameRepository.delete(game);
+        return "successfullyCanceled";
+    }
+
+    @RequestMapping(path = "/acceptedGames")
+    public String showAcceptedGames(HttpSession session, Model model){
+        User user =(User) session.getAttribute("user");
+        if(user == null){
+            return "needSignIn";
+        }
+        List<Game> gamesWhereUserArePlayer = gameRepository.findByPlayersContainsAndGameDateAfterOrderByGameDateAscGameTimeAsc(user, LocalDate.now());
+        model.addAttribute("games", gamesWhereUserArePlayer);
+        return "game/gamesAccepted";
+    }
+
+/*    @RequestMapping(path = "/leaveGame/{gameId}")
+    public String leaveGameByUser(HttpSession session, Model model, @PathVariable Long gameId){
+        User user =(User) session.getAttribute("user");
+        if(user == null){
+            return "needSignIn";
+        }
+        Game game = gameRepository.findFirstById(gameId);
+        List<User> players = game.getPlayers();
+        for (User player: players){
+            if(player.getId() == user.getId()){
+                game.getPlayers().remove(player);
+            }
+        }
+        model.addAttribute("game", game);
+        gameRepository.save(game);
+        return "game/leavingTheGame";
+    }*/
 
     @RequestMapping(path = "/all")
     public String findAll(){

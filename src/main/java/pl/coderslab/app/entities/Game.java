@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
+import pl.coderslab.app.repositories.CandidateRepository;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -56,7 +58,7 @@ public class Game {
 
     private String description;
 
-    public void setAvailable(boolean available) {
+    public void checkAvailable(boolean available) {
         if(maxPlayer == players.size()){
             this.available = false;
         } else {
@@ -80,4 +82,6 @@ public class Game {
                 ", description='" + description + '\'' +
                 '}';
     }
+
+
 }

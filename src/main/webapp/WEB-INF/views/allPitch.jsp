@@ -8,8 +8,20 @@
     <title>Pitch list</title>
 </head>
 <body>
+<table>
+    <thead>
+    <td>Pitch name</td>
+    <td>Pitch address</td>
+    <td>Pitch type</td>
+    </thead>
     <c:forEach items="${pitches}" var = "pitch">
-        <p>${pitch.name}    ${pitch.address}</p>
+        <tr>
+            <td>${pitch.name}</td>
+            <td>${pitch.address}</td>
+            <td>${pitch.type}</td>
+        </tr>
     </c:forEach>
+</table>
+<a href="/user/desktop">Back to desktop</a>
 </body>
 </html>

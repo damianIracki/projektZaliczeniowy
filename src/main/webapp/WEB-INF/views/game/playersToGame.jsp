@@ -5,22 +5,15 @@
            uri="http://www.springframework.org/tags/form" %>
 <html>
 <head>
-    <title>Candidates</title>
+    <title>Players</title>
 </head>
 <body>
 <h3>${game.description}</h3>
-<p>Users are displayed by joined date</p>
-<table>
-    <thead>
-    <td>Username</td>
-    </thead>
-    <c:forEach items="${candidates}" var="candidate">
-        <tr>
-            <td>${candidate.userName}</td>
-            <td><a href = "/game/candidate/accept/${candidate.id}">Accept</a></td>
-        </tr>
+<ol>
+    <c:forEach items="${players}" var="player">
+            <li>${player.userName}</li>
     </c:forEach>
-</table>
+</ol>
 <a href="/game/myGames">Back to myGames</a>
 </body>
 </html>

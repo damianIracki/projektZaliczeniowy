@@ -5,13 +5,9 @@
            uri="http://www.springframework.org/tags/form" %>
 <html>
 <head>
-    <title>${pitch.name} Details</title>
+    <title>Canceled</title>
 </head>
 <body>
-    <p>Name: ${pitch.name}</p>
-    <p>Address: ${pitch.address}</p>
-    <p>Type: ${pitch.type}</p>
-<a href="/user/desktop">To User Desktop</a>
-<a href="/game/myGames">To Game List</a>
+
 </body>
 </html>

@@ -5,13 +5,10 @@
            uri="http://www.springframework.org/tags/form" %>
 <html>
 <head>
-    <title>${pitch.name} Details</title>
+    <title>Player Accepted</title>
 </head>
 <body>
-    <p>Name: ${pitch.name}</p>
-    <p>Address: ${pitch.address}</p>
-    <p>Type: ${pitch.type}</p>
-<a href="/user/desktop">To User Desktop</a>
-<a href="/game/myGames">To Game List</a>
+    <h3>Player ${player.userName} was added to game</h3>
+    <a href = "/game/candidates/${game.id}">Back to candidate list</a>
 </body>
 </html>

@@ -6,21 +6,26 @@
 <html>
 <head>
     <title>Add User</title>
+    <style>
+        .error{
+            color: orange;
+        }
+    </style>
 </head>
 <body>
 <h3>Create new user</h3>
     <form:form method="post" modelAttribute="user">
         UserName: <form:input path="userName"/>
-        <form:errors path="userName"/><br>
+        <form:errors cssClass="error" path="userName"/><br>
         Password: <form:password path="password"/>
-        <form:errors path="password"/><br>
+        <form:errors cssClass="error" path="password"/><br>
         ConfirmPassword: <form:password path="repeatedPassword"/>
-        <form:errors/><br>
-
+        <form:errors cssClass="error"/><br>
         Email: <form:input path="email"/>
-        <form:errors path="email"/><br>
+        <form:errors cssClass="error" path="email"/><br>
         <input type="submit" value="save"/>
     </form:form>
-
+Do you already have an account? <a href="/login">Sign in</a><br>
+<a href="/">Back to homepage</a>
 </body>
 </html>

@@ -34,6 +34,7 @@ public class PitchController {
         Pitch pitch = new Pitch();
         pitch.setAddress(pitchDto.getAddress());
         pitch.setName(pitchDto.getName());
+        pitch.setType(pitchDto.getType());
         pitchRepository.save(pitch);
         return "redirect: /pitch/list";
     }

@@ -18,4 +18,9 @@ public interface CandidateRepository extends JpaRepository<Candidate, Long> {
 
     Candidate findFirstByUserAndGame(User user, Game game);
 
+    Candidate findFirstById(Long id);
+
+    Integer countCandidateByGame(Game game);
+
+    List<Candidate> findAllByGame(Game game);
 }

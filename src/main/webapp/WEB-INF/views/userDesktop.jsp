@@ -10,10 +10,14 @@
 <body>
 <h1>Welcome ${user.userName}</h1>
 <a href="/game/create">Create Game</a>
+<a href="/game/gamesToJoin">Joint to the Game</a>
 <a href="/game/myGames">My Games</a>
+<a href="/game/acceptedGames">Accepted Games</a><br><br>
+
 <a href="/user/edit">Edit Profile</a>
-<a href="/user/changePassword">Change Passworwd</a>
+<a href="/user/changePassword">Change Password</a>
 <a href="/logout">Logout</a><br>
+
 <h3>Five earliest games</h3>
 <table>
     <thead>
@@ -36,12 +40,6 @@
             <td><a href="/pitch/${game.pitch.id}">${game.pitch.name}</a></td>
             <td>${game.pricePerPlayer}</td>
             <td>${game.description}</td>
-            <c:choose>
-                <c:when test="${game.available=='true'}">
-                    <td><a href="/game/join/${game.id}">JOIN</a></td>
-                </c:when>
-                <c:otherwise><td>FULL</td></c:otherwise>
-            </c:choose>
         </tr>
     </c:forEach>
 </table>

@@ -8,7 +8,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import pl.coderslab.app.dto.UserDto;
-import pl.coderslab.app.entities.Candidate;
 import pl.coderslab.app.entities.Game;
 import pl.coderslab.app.entities.User;
 import pl.coderslab.app.repositories.CandidateRepository;
@@ -18,7 +17,9 @@ import pl.coderslab.app.repositories.UserRepository;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Controller
@@ -34,6 +35,14 @@ public class UserController {
     @Autowired
     private CandidateRepository candidateRepository;
 
+    @RequestMapping(path = "/test")
+    @ResponseBody
+    public String test(HttpSession session){
+        User user = (User) session.getAttribute("user");
+        List<Game> games = gameRepository.findFirst5ByPlayersNotContainsAndGameDateAfterOrderByGameDateAsc(user, LocalDate.now());
+        return games.stream().map(Game::toString).collect(Collectors.joining("<br>"));
+    }
+
     @RequestMapping(path = "/desktop", method = RequestMethod.GET)
     public String userDesktop(Model model, HttpSession session){
         User user = (User) session.getAttribute("user");
@@ -41,7 +50,8 @@ public class UserController {
             return "needSignIn";
         }
         model.addAttribute("user", user);
-        List<Game> games = gameRepository.findFirst5ByPlayersNotContainsOrderByGameDateAsc(user);
+        //List<Game> games = gameRepository.findFirst5ByPlayersNotContainsOrderByGameDateAsc(user);
+        List<Game> games = gameRepository.findFirst5ByPlayersNotContainsAndGameDateAfterOrderByGameDateAsc(user, LocalDate.now());
         model.addAttribute("games", games);
         return "userDesktop";
     }
@@ -58,7 +68,7 @@ public class UserController {
             userDto.setPassword("123456");
             userDto.setRepeatedPassword("123456");
             model.addAttribute("user", userDto);
-            return "editUser";
+            return "/user/editUser";
         }
         return "needSignIn";
     }
@@ -77,7 +87,7 @@ public class UserController {
             userRepository.save(userInSession);
             return "redirect: /user/desktop";
         }
-        return "editUser";
+        return "/user/editUser";
     }
 
     @RequestMapping(path = "/changePassword", method = RequestMethod.GET)
@@ -88,7 +98,7 @@ public class UserController {
             user.setUserName(userInSession.getUserName());
             user.setEmail(userInSession.getEmail());
             model.addAttribute("user", user);
-            return "changePasswordUser";
+            return "/user/changePasswordUser";
         }
         return "needSignIn";
     }

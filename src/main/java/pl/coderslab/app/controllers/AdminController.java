@@ -5,7 +5,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import pl.coderslab.app.entities.Game;
 import pl.coderslab.app.entities.Pitch;
 import pl.coderslab.app.entities.User;
@@ -28,6 +27,14 @@ public class AdminController {
 
     @Autowired
     private PitchRepository pitchRepository;
+
+    @RequestMapping(path = "/desktop")
+    public String adminDesktop(HttpSession session){
+        if(!checkAdmin(session)){
+            return "uDontHavePermission";
+        }
+        return "admin/desktop";
+    }
 
     @RequestMapping(path = "/allGames")
     public String showAllGames(Model model, HttpSession session){
