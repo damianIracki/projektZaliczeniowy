@@ -5,10 +5,11 @@
            uri="http://www.springframework.org/tags/form" %>
 <html>
 <head>
-    <title>Canceled</title>
+    <title>Are you sure</title>
 </head>
 <body>
-    <h3>Game are successfully canceled</h3>
-<a href="/game/myGames">Back to game list</a>
+<h3>${game.description}</h3>
+    <h3>Are you sure to cancel this game?</h3>
+<a href="/game/cancel/${game.id}/accept">Yes</a>   <a href="/game/myGames">No</a>
 </body>
 </html>

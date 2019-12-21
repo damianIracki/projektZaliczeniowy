@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import pl.coderslab.app.dto.PitchDto;
 import pl.coderslab.app.entities.Pitch;
+import pl.coderslab.app.entities.User;
 import pl.coderslab.app.repositories.PitchRepository;
 
 import javax.servlet.http.HttpSession;
@@ -25,12 +26,16 @@ public class PitchController {
 
     @RequestMapping(path = "/add", method = RequestMethod.GET)
     public String addPitch(HttpSession session, Model model){
+        User user = (User) session.getAttribute("user");
+        if(user == null){
+            return "needSignIn";
+        }
         model.addAttribute("pitch", new PitchDto());
         return "addPitch";
     }
 
     @RequestMapping(path = "/add", method = RequestMethod.POST)
-    public String savePitch(HttpSession session, @ModelAttribute("pitch") PitchDto pitchDto){
+    public String savePitch(@ModelAttribute("pitch") PitchDto pitchDto){
         Pitch pitch = new Pitch();
         pitch.setAddress(pitchDto.getAddress());
         pitch.setName(pitchDto.getName());

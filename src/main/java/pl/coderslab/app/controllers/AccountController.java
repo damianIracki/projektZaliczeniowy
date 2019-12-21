@@ -38,7 +38,7 @@ public class AccountController {
         user.setUserName(userDto.getUserName());
         user.setEmail(userDto.getEmail());
         userRepository.save(user);
-        return "redirect: /";
+        return "accountCreate";
     }
 
     @RequestMapping(path = "/login", method = RequestMethod.GET)
