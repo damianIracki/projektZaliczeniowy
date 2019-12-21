@@ -50,7 +50,6 @@ public class UserController {
             return "needSignIn";
         }
         model.addAttribute("user", user);
-        //List<Game> games = gameRepository.findFirst5ByPlayersNotContainsOrderByGameDateAsc(user);
         List<Game> games = gameRepository.findFirst5ByPlayersNotContainsAndGameDateAfterOrderByGameDateAsc(user, LocalDate.now());
         model.addAttribute("games", games);
         return "userDesktop";

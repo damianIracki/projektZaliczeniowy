@@ -37,12 +37,19 @@
 
 <form:form method="post" modelAttribute="game">
     Short description: <form:textarea path="description"/><br>
+    <form:errors path="description"/>
     Date: <form:input path="gameDate" id="datepicker"/><br>
+    <form:errors path="gameDate"/>
     Start time: <form:input path="startTime" id="timepicker"/><br>
+    <form:errors path="startTime"/>
     GameTime: <form:input path="gameTime"/><br>
+    <form:errors path="gameTime"/>
     Price per player: <form:input path="pricePerPlayer"/><br>
+    <form:errors path="pricePerPlayer"/>
     Max number of player: <form:input path="maxPlayers"/><br>
+    <form:errors path="maxPlayers"/>
     Pitch: <form:select path="pitch" items="${pitches}"/> <a href="/pitch/add">Add new Pitch</a> <br>
+    <form:errors path="pitch"/>
     <input type="submit" value="Create"/>
 </form:form>
 <a href="/user/desktop">To User Desktop</a>

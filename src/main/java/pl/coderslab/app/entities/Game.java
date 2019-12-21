@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import pl.coderslab.app.repositories.CandidateRepository;
 
 import javax.persistence.*;
+import javax.validation.constraints.Future;
 import javax.validation.constraints.NotEmpty;
 import java.sql.Timestamp;
 import java.time.LocalDate;
@@ -30,6 +31,7 @@ public class Game {
     private Long id;
 
 
+    @Future
     private LocalDate gameDate;
 
 
@@ -54,8 +56,10 @@ public class Game {
 
     private boolean available;
 
+    @Column(columnDefinition = "double default 0.0")
     private double pricePerPlayer;
 
+    @NotEmpty
     private String description;
 
     public void checkAvailable(boolean available) {

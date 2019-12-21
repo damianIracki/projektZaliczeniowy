@@ -3,6 +3,7 @@ package pl.coderslab.app.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import pl.coderslab.app.dto.GameDto;
 import pl.coderslab.app.entities.Candidate;
@@ -15,6 +16,7 @@ import pl.coderslab.app.repositories.PitchRepository;
 import pl.coderslab.app.repositories.UserRepository;
 
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -48,14 +50,21 @@ public class GameController {
             return "needSignIn";
         }
         model.addAttribute("game", new GameDto());
-        return "createGame";
+        return "game/createGame";
     }
 
     @RequestMapping(path = "/create", method = RequestMethod.POST)
-    public String saveGame(@ModelAttribute(name = "game") GameDto gameDto,
-                           HttpSession session){
+    public String saveGame(@ModelAttribute(name = "game") @Valid GameDto gameDto,
+                           HttpSession session, BindingResult result){
+        User user = (User) session.getAttribute("user");
+        if(user == null){
+            return "needSignIn";
+        }
+        if(result.hasErrors()){
+            return "game/createGame";
+        }
         Game game = new Game();
-        game.setCreator((User)session.getAttribute("user"));
+        game.setCreator(user);
         game.setDescription(gameDto.getDescription());
         game.setMaxPlayer(gameDto.getMaxPlayers());
         game.setPitch(pitchRepository.findFirstByName(gameDto.getPitch()));
@@ -65,8 +74,8 @@ public class GameController {
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:m");
         game.setGameDate(LocalDate.parse(gameDto.getGameDate(), dateFormatter));
         game.setStartTime(LocalTime.parse(gameDto.getStartTime(), timeFormatter));
-        User user = userRepository.findFirstById(((User) session.getAttribute("user")).getId());
-        game.getPlayers().add(user);
+        User userForPlayers = userRepository.findFirstById(user.getId());
+        game.getPlayers().add(userForPlayers);
         game.checkAvailable(true);
         gameRepository.save(game);
         return "redirect: /game/myGames";
@@ -93,10 +102,20 @@ public class GameController {
     }
 
     @RequestMapping(path = "candidate/accept/{candidateId}")
-    public String acceptCandidateToGame(@PathVariable Long candidateId, Model model){
+    public String acceptCandidateToGame(@PathVariable Long candidateId, Model model, HttpSession session){
+        User user = (User) session.getAttribute("user");
+        if(user == null){
+            return "needSignIn";
+        }
         Candidate candidate = candidateRepository.findFirstById(candidateId);
+        if(candidate == null){
+            return "uDontHavePermission";
+        }
         User player = userRepository.findFirstById(candidate.getUser().getId());
         Game game = gameRepository.findFirstById(candidate.getGameId());
+        if(user.getId()!= game.getCreator().getId()){
+            return "uAreNotCreator";
+        }
         game.getPlayers().add(player);
         game.checkAvailable(true);
         model.addAttribute("player", player);
@@ -163,7 +182,7 @@ public class GameController {
         }
         Game game = gameRepository.findFirstById(gameId);
         if(user.getId() != game.getCreator().getId()){
-            return "dontHavePermissionToCancelGame";
+            return "uAreNotCreator";
         }
         model.addAttribute("game", game);
         List<Candidate> candidatesToDelete = candidateRepository.findAllByGame(game);

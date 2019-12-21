@@ -6,6 +6,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pl.coderslab.app.entities.Pitch;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -17,33 +20,27 @@ import java.time.LocalTime;
 @AllArgsConstructor
 public class GameDto {
 
+    @NotEmpty
     private String gameDate;
 
+    @NotEmpty
     private String startTime;
 
+    @NotNull
     private int gameTime;
 
+    @NotEmpty
     private String pitch;
 
+    @NotNull
     private int maxPlayers;
 
     private boolean available;
 
+
     private double pricePerPlayer;
 
+    @NotEmpty
     private String description;
 
-    @Override
-    public String toString() {
-        return "GameDto{" +
-                "gameDate='" + gameDate + '\'' +
-                ", startTime='" + startTime + '\'' +
-                ", gameTime=" + gameTime +
-                ", pitch='" + pitch + '\'' +
-                ", maxPlayers=" + maxPlayers +
-                ", available=" + available +
-                ", pricePerPlayer=" + pricePerPlayer +
-                ", description='" + description + '\'' +
-                '}';
-    }
 }

@@ -5,8 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.validator.constraints.UniqueElements;
 import pl.coderslab.app.adnotations.IsConfirmPassword;
+import pl.coderslab.app.adnotations.IsUniqueEmail;
+import pl.coderslab.app.adnotations.IsUniqueUsername;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
@@ -19,6 +20,7 @@ import javax.validation.constraints.Size;
 @IsConfirmPassword(message = "Password must be that same")
 public class UserDto {
 
+    @IsUniqueUsername(message = "Username already exist")
     @Size(min = 5, max = 30, message = "Username is too short. Minimum length is 5 character")
     private String userName;
 
@@ -30,5 +32,6 @@ public class UserDto {
 
     @NotEmpty
     @Email(message = "Email form is not correct")
+    @IsUniqueEmail(message = "Email is already used")
     private String email;
 }
