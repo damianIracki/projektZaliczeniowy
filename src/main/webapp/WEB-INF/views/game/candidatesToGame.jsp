@@ -17,7 +17,14 @@
     <c:forEach items="${candidates}" var="candidate">
         <tr>
             <td>${candidate.userName}</td>
-            <td><a href = "/game/candidate/accept/${candidate.id}">Accept</a></td>
+            <c:choose>
+                <c:when test="${game.available == 'true'}">
+                    <td><a href = "/game/candidate/accept/${candidate.id}">Accept</a> ${game.available}</td>
+                </c:when>
+                <c:otherwise>
+                    <td>FULL</td>
+                </c:otherwise>
+            </c:choose>
         </tr>
     </c:forEach>
 </table>
